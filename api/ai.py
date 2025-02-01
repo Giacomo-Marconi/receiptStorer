@@ -7,7 +7,8 @@ CONFIG = {
   "max_output_tokens": 150,
 }
 
-genai.configure(api_key="AIzaSyAe8K6eouqBqfJJ9evlC6E8_omvsfqbhlA")
+
+genai.configure(api_key="key")
 model = genai.GenerativeModel(model_name='gemini-1.5-flash', generation_config=CONFIG)
 
 
@@ -29,7 +30,7 @@ def getData(image):
           }""", PIL.Image.open(image)])
     
     data = result.text.strip()
-    # print(data)
+    print(data)
     open = data.find('{')
     close = data.rfind('}')+1
     data = data[open:close]
@@ -42,5 +43,3 @@ if(__name__ == "__main__"):
     
     ''''''
     
-
-

@@ -66,36 +66,69 @@ def getReceipt():
     if("id" not in params):
         return "No id provided", 400
     
+    if("data" not in params):
+        db = dbm.DB()
+        data = db.getReceipt(params["id"])
+        return jsonify(data)
+    
     db = dbm.DB()
-    data = db.getReceipt(params["id"])
+    data = db.getReceiptMese(params["id"], data=params["data"])
     return jsonify(data)
+
+@app.route('/lastReceipt', methods=['GET'])
+def getLastReceipt():
+    params = request.args
+    if("id" not in params):
+        return "No id provided", 400
+    
+    db = dbm.DB()
+    data = db.getLastReceipt(params["id"])
+    return jsonify(data)
+
+
+@app.route('/analize', methods=['POST'])
+def analize():
+    print(request.files)
+    if('file' not in request.files):
+        print("no file")
+        return {'error': 'no file'}, 401
+    
+    try:
+        image = request.files['file']
+        perc = "/Users/giacomo/git/receiptStorer/imgSaved/" + image.filename.split(".")[0] + "_" + str(datetime.now().timestamp()) + ".png"
+        
+        os.makedirs(os.path.dirname(perc), exist_ok=True)
+        print("ok")
+        image.save(perc)
+        print("saved: ", perc)
+        data = ai.getData(perc)
+        data['perc'] = perc
+        print(data)
+        return jsonify(data)
+    except Exception as e:
+        print(e)
+        return {'error': e}, 401
 
 
 @app.route('/addData', methods=['POST'])
 def addReceipt():
-    if('file' not in request.files):
-        return {'status': 'no file'}
-    
-    image = request.files['file']
-    perc = "/Users/giacomo/git/receiptStorer/imgSaved/" + image.filename.split(".")[0] + "_" + str(datetime.now().timestamp()) + ".png"
-    
-    os.makedirs(os.path.dirname(perc), exist_ok=True)
-    image.save(perc)
-    
-    data = ai.getData(perc)
+    print(request.json)
+    data = request.json
+    print("\n\ndata:\n",data)
+    if("perc" not in data or "totale" not in data or "data" not in data or "negozio" not in data):
+        return {'error': 'error params finded'}, 401
     
     db = dbm.DB()
-    if("total" not in data or "date" not in data or "merchant_name" not in data):
-        return {'status': 'error params finded'}, 401
     
-    if(not db.addReceipt("1", perc, data["total"], data["date"], data["merchant_name"])):
-        return {'status': 'error db'}, 401
-    print("added: ", perc, data["total"], data["date"], data["merchant_name"])
+    if(not db.addReceipt("1", data["perc"], data["totale"], data["data"], data["negozio"])):
+        return {'error': 'error db'}, 401
+    print("added: ", data['perc'], data["totale"], data["data"], data["negozio"])
     
-    return jsonify(data)
+    return {'status': 'ok'}
     
 
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port="20002")
+

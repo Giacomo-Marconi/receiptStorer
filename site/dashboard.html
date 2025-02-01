@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <button id="blur" style="display: none;" onclick="closeAll()" ></button>
+
+    <nav id="nav">
+        <p>ReceiptStorer</p>
+
+        <div>
+            <button class="button_nav_add" onclick="addScontrino()">
+                <img src="icons/plus.png" alt="plus">
+                <p>Aggiungi</p>
+            </button>
+            <button class="button_nav_user">
+                <img src="icons/elon.png" alt="photoUsername">
+                <div>
+                    <p>Ciao User Test</p>
+                    <p>mail.user.test@gmail.com</p>
+                </div>
+            </button>
+        </div>
+    </nav>
+
+    <div id="container_body">
+        <div id="div_navigation">
+            <div class="div_upper_navigation">
+                <p class="p_bentornato">Bentornato</p>
+                <p class="p_nome">User Test</p>
+
+                <div class="div_links_upper">
+                    <button class="div_link" id="divlink1" onclick="showPage('dashboard')">
+                        <img src="icons/dashboard_active.png" alt="home" id="imgdashboard">
+                        <p class="active" id="pdashboard">Dashboard</p>
+                    </button>
+                    <button class="div_link" onclick="showPage('bilancio'); showCHartsBilancio()">
+                        <img src="icons/bilancio.png" alt="home" id="imgbilancio">
+                        <p id="pbilancio">Bilancio</p>
+                    </button>
+                    <button class="div_link" onclick="showPage('transazioni')">
+                        <img src="icons/transazioni.png" alt="home" id="imgtransazioni">
+                        <p id="ptransazioni">Transazioni</p>
+                    </button>
+                </div>
+            </div>
+
+            <div class="div_lower_navigation">
+                <button class="div_link">
+                    <img src="icons/impostazioni.png" alt="home" id="imgimpostazioni">
+                    <p id="pimpostazioni">Impostazioni</p>
+                </button>
+                <a class="div_link" href="">
+                    <img src="icons/logout.png" alt="home">
+                    <p>Logout</p>
+                </a>
+            </div>
+        </div>
+
+        <div id="content">
+
+            <div class="ContainerSopra" id="MESE">
+                <div class="Date">
+                    <p class="MeseAnno" id="month">Gennaio</p>
+                    <p class="SpanMeseAnno" id="year">2025</p>
+                    
+                </div>
+                <div id="date" class="AvantiIndietro">
+                    <button class="ButtonIndietro" id="previous-month">
+                        <p>&lt;</p>
+                    </button>
+                    <button id="ButtonMonth" class="ButtonMonth">
+                        <p>Oggi</p>
+                    </button>
+                    <button class="ButtonAvanti" id="next-month">
+                        <p>&gt;</p>
+                    </button>
+                </div>
+            </div>
+
+
+            <div id="DASHBOARD" class="container_content">
+                <div class="div_left_content">
+                    <div id="DivBilancio">
+                        <p class="p_title">Bilancio</p>
+                        <p class="p_soldi_bilancio"><span id="mountBalance">100€</span> <span
+                                class="euro">EURO</span></p>
+                        <div id="container" class="div_graph"></div>
+                    </div>
+
+                    <div id="DivUltimeTransazioni">
+                        <p class="p_title">Transazioni recenti</p>
+
+                        <table id="TableLatestTransaction">
+                            <thead>
+                                <th>
+                                    <p>Numero scontrino</p>
+                                </th>
+                                <th>
+                                    <p>Data</p>
+                                </th>
+                                <th>
+                                    <p>Totale</p>
+                                </th>
+                                <th>
+                                    <p>Luogo</p>
+                                </th>
+                            </thead>
+                            <tbody id="tableTransactions">
+                                <!-- <tr>
+                                    <td>
+                                        <p>xxx</p>
+                                    </td>
+                                    <td>
+                                        <p>2025-01-20</p>
+                                    </td>
+                                    <td>
+                                        <p>24,24<span class="euro">€</span></p>
+                                    </td>
+                                    <td>
+                                        <p>Lidl</p>
+                                    </td> -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="BILANCIO" class="container_content" style="display: none;">
+                <div class="div_upper_bilancio">
+                    <div class="div_right_bilancio">
+                        <div class="div_bilancio">
+                            <p class="p_title">Uscite</p>
+                            <p class="p_uscite_bilancio" id="bilancio-tot">  <span class="euro">EURO</span></p>
+                        </div>
+                        <div class="div_graph_columns">
+                            <div id="container3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="TRANSAZIONI" class="container_content" style="display: none;">
+                <div class="div_right_transazioni">
+                    <div class="nav_transazioni">
+                        <p class="p_title">Uscite</p>
+                        <p class="p_transazione rosso" id="transazioni-tot"> <span class="euro">EURO</span></p>
+                    </div>
+                    <div class="div_table_transaction">
+                        <table id="TableTransaction">
+                            <thead>
+                                <th>
+                                    <p>Numero</p>
+                                </th>
+                                <th>
+                                    <p>Data</p>
+                                </th>
+                                <th>
+                                    <p>Totale</p>
+                                </th>
+                                <th>
+                                    <p>Luogo</p>
+                                </th>
+                            </thead>
+                            <tbody id="table-transazioni">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="DivAddButton" style="display: none;">
+        <nav id="navAddScontrino">
+            <p class="p_title_add">Aggiungi scontrino</p>
+            <button onclick="closeAll()">
+                <img src="icons/close.svg" alt="close">
+            </button>
+        </nav>
+        <div class="div_content_add">
+            <div class="div_upper_content_add">
+                <label for="file-upload" class="custom-file-upload">
+                    <img src="icons/upload.svg" alt="upload">
+                    <p>Carica immagine</p>
+                </label>
+                <input id="file-upload" type="file" />
+                <div class="right_content_add">
+                <div class="div_tipologia">
+                    <button class="button_tipologia_uscita" onclick="">
+                        <div class="div_check_box_uscita" id="CheckboxUscita">
+                            <svg width="272" height="207" viewBox="0 0 272 207" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path id="svgCheck_blu" d="M18 125.194L82.3162 189.51L254.426 18" stroke="white"
+                                    stroke-width="35" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <p id="PButtonUscita">Uscita</p>
+                    </button>
+                </div>
+                <input id="conferm" type="submit" value="Conferma">
+                </div>
+            </div>
+            <form class="div_lower_content_add" method='POST' action="/add">
+                <input id="img-tipo" type="hidden" name="income" value="uscita">
+                <input id="img-indirizzo" type="hidden" name="address" value="">
+                <input id="img-categoria" type="hidden" name="category" value="">
+                <div class="div_left_lower_content_add">
+                    <div class="div_foto_scontrini" id="imgUp">
+                    </div>
+
+                    <div class="div_data_immagine">
+                        <div>
+                            <div class="div_data_p">
+                                <p>Numero </p>
+                                <input id="perc" type="hidden" value="">
+                                <input id="numero" type="text" placeholder="xxxx-xxxx" value="" name="numero">
+                            </div>
+                            <div class="div_data_p">
+                                <p>Data </p>
+                                <input id="data" type="text" placeholder="yyyy-mm-dd hh:mm:ss" value="" name="data">
+                            </div>
+                            <div class="div_data_p">
+                                <p>Negozio </p>
+                                <input id="negozio" type="text" value="" placeholder="negozio" name="negozio">
+                            </div>
+                            <div class="div_data_p">
+                                <p>Luogo </p>
+                                <input id="luogo" type="text" value="" placeholder="luogo" name="luogo">
+                            </div>
+                        </div>
+                        <div>
+                            <p>Totale</p>
+                            <input id="totale" type="text" value="" placeholder="totale"  id="inputTotale" name="tot">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+<script src="script.js"></script>
+</html>

@@ -54,6 +54,29 @@ class DB:
         self.close()
         return result
     
+    def getReceiptMese(self, id, data="2025-01-01"):
+        mese = data.split("-")[1]
+        anno = data.split("-")[0]
+        
+        q = """
+        select * from receipt where idU = %s and month(data) = %s and year(data) = %s
+        """
+        
+        self.cursor.execute(q, (id, mese, anno))
+        result = self.cursor.fetchall()
+        self.close()
+        return result
+ 
+    def getLastReceipt(self, id):
+        q = """
+        select * from receipt where idU = %s order by data desc limit 3
+        """
+        
+        self.cursor.execute(q, (id,))
+        result = self.cursor.fetchall()
+        self.close()
+        return result
+    
     def addReceipt(self, idU, path, totale, data, negozio):
         q = """
         insert into receipt(path, totale, data, negozio, idU) values(%s, %s, %s, %s, %s)
@@ -140,3 +163,4 @@ create table receipt(
     foreign key(idU) references user(id)
 )
 """
+
